@@ -51,13 +51,13 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
 
 **Elgabel Region, Sudan** — an agricultural zone where the following five crop/land-cover classes are mapped using Sentinel-2 imagery from Q1 2020:
 
-| Class ID | Name   | Color   | Samples | Percentage |
-|----------|--------|---------|--------:|----------:|
-| 0        | Cotton | ![#FF8C00](https://via.placeholder.com/12/FF8C00/FF8C00.png) `#FF8C00` | 337 | 1.4% |
-| 1        | Wheat  | ![#FFD700](https://via.placeholder.com/12/FFD700/FFD700.png) `#FFD700` | 7,901 | 32.2% |
-| 2        | Fallow | ![#8B4513](https://via.placeholder.com/12/8B4513/8B4513.png) `#8B4513` | 11,150 | 45.4% |
-| 3        | Grass  | ![#32CD32](https://via.placeholder.com/12/32CD32/32CD32.png) `#32CD32` | 5,024 | 20.5% |
-| 4        | Water  | ![#0000FF](https://via.placeholder.com/12/0000FF/0000FF.png) `#0000FF` | 144 | 0.6% |
+| Class ID | Name   | Color | Samples | Percentage |
+|:--------:|--------|:-----:|--------:|----------:|
+| 0 | Cotton | ![Cotton](https://img.shields.io/badge/-Cotton-FF8C00?style=flat-square) | 337 | 1.4% |
+| 1 | Wheat | ![Wheat](https://img.shields.io/badge/-Wheat-FFD700?style=flat-square) | 7,901 | 32.2% |
+| 2 | Fallow | ![Fallow](https://img.shields.io/badge/-Fallow-8B4513?style=flat-square) | 11,150 | 45.4% |
+| 3 | Grass | ![Grass](https://img.shields.io/badge/-Grass-32CD32?style=flat-square) | 5,024 | 20.5% |
+| 4 | Water | ![Water](https://img.shields.io/badge/-Water-0000FF?style=flat-square) | 144 | 0.6% |
 
 > **Total:** 24,556 labeled samples | **Imbalance ratio:** 77.4:1 (Fallow vs Water)
 
