@@ -10,6 +10,25 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
 
 ---
 
+## Table of Contents
+
+- [Study Area](#study-area)
+- [Workflow](#workflow)
+- [Results](#results)
+- [Data Exploration](#data-exploration)
+- [Model Training Details](#model-training-details)
+- [Data Description](#data-description)
+- [Model Architectures](#model-architectures)
+- [Project Structure](#project-structure)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Google Earth Engine](#google-earth-engine)
+- [Contributing](#contributing)
+- [Citation](#citation)
+- [License](#license)
+
+---
+
 ## Study Area
 
 **Elgabel Region, Sudan** — an agricultural zone where the following five crop/land-cover classes are mapped using Sentinel-2 imagery from Q1 2020:
@@ -202,17 +221,11 @@ All PyTorch models use: **FocalLoss** (gamma=2), **AdamW** (weight_decay=1e-4), 
 
 ```
 crop-classification-deep-learning/
-├── README.md
-├── LICENSE
-├── .gitignore
-├── environment.yml
-├── fix_jupyter_kernel.bat
-├── 01_data_exploration.py
-├── 02_preprocessing_and_model.py
-├── 03_apply_to_image.py
-├── 03_diagnose_bands.py
-├── 04_pytorch_models.py
-├── 05_apply_pytorch_to_image.py
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   └── PULL_REQUEST_TEMPLATE.md
 ├── docs/                          # Result visualizations
 │   ├── class_distribution.png
 │   ├── feature_distributions.png
@@ -228,22 +241,50 @@ crop-classification-deep-learning/
 │   ├── truecolor_vs_classification.png
 │   ├── pytorch_classification_visualization.png
 │   └── pytorch_truecolor_vs_classification.png
-└── gee/
-    └── crop_classification_gee.js
+├── gee/
+│   └── crop_classification_gee.js
+├── 01_data_exploration.py
+├── 02_preprocessing_and_model.py
+├── 03_apply_to_image.py
+├── 03_diagnose_bands.py
+├── 04_pytorch_models.py
+├── 05_apply_pytorch_to_image.py
+├── .gitignore
+├── CITATION.cff
+├── CONTRIBUTING.md
+├── LICENSE
+├── Makefile
+├── README.md
+├── environment.yml
+├── fix_jupyter_kernel.bat
+└── requirements.txt
 ```
 
 ---
 
 ## Setup
 
-### 1. Create the conda environment
+### Option A: Conda (recommended)
 
 ```bash
 conda env create -f environment.yml
 conda activate geodl
 ```
 
-### 2. Register Jupyter kernel (optional)
+### Option B: pip
+
+```bash
+pip install -r requirements.txt
+```
+
+### Option C: Makefile
+
+```bash
+make setup        # conda
+make setup-pip    # pip
+```
+
+### Register Jupyter kernel (optional)
 
 ```bash
 fix_jupyter_kernel.bat
@@ -281,9 +322,16 @@ python 04_pytorch_models.py
 python 05_apply_pytorch_to_image.py
 ```
 
+Or run the entire pipeline with one command:
+
+```bash
+make run-all
+```
+
 ### Utility Scripts
 
 - `03_diagnose_bands.py` — Diagnose band ordering between training data and GeoTIFF
+- Run `make help` to see all available commands
 
 ---
 
@@ -298,6 +346,29 @@ The `gee/crop_classification_gee.js` script handles data acquisition:
 5. Calculates 14 spectral indices (NDVI, EVI, SAVI, NDRE, GNDVI, NDMI, BSI, MNDWI, LSWI, GCVI, WDRVI, CIgreen, CIrededge, MSAVI)
 6. Samples training points from labeled polygons (5 classes)
 7. Exports the 24-band composite and training CSV to Google Drive
+
+---
+
+## Contributing
+
+Contributions are welcome! Please read the [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
+
+---
+
+## Citation
+
+If you use this project in your research, please cite it:
+
+```bibtex
+@software{osman_crop_classification,
+  title  = {Crop Classification with Deep Learning},
+  author = {Osman},
+  url    = {https://github.com/Osman-Geomatics93/crop-classification-deep-learning},
+  license = {MIT}
+}
+```
+
+You can also use the **"Cite this repository"** button on GitHub (powered by `CITATION.cff`).
 
 ---
 

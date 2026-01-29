@@ -1,0 +1,23 @@
+# Core
+numpy
+pandas
+matplotlib
+seaborn
+joblib
+
+# Machine Learning
+scikit-learn
+xgboost
+imbalanced-learn
+
+# Deep Learning
+torch
+torchvision
+
+# Geospatial
+gdal
+rasterio
+
+# Jupyter (optional)
+ipykernel
+jupyter

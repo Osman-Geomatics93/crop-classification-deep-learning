@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: "Crop Classification with Deep Learning"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "Osman"
+    alias: "Osman-Geomatics93"
+repository-code: "https://github.com/Osman-Geomatics93/crop-classification-deep-learning"
+license: MIT
+keywords:
+  - crop-classification
+  - deep-learning
+  - remote-sensing
+  - sentinel-2
+  - pytorch
+  - machine-learning
+  - google-earth-engine
+  - xgboost
+  - random-forest
+  - geospatial
+abstract: >-
+  Multi-class crop classification pipeline for the Elgabel Region, Sudan
+  using Sentinel-2 satellite imagery. Implements scikit-learn models
+  (MLP, XGBoost, Random Forest) and PyTorch deep learning architectures
+  (SpectralMLP, SpectralCNN1D, SpectralHybrid, SpectralAttention) with
+  FocalLoss, SMOTE, and class weighting for imbalanced data.
