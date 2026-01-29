@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install linters
+        run: pip install flake8 pycodestyle
+
+      - name: Check Python syntax errors
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Lint with flake8 (warnings)
+        run: flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+  validate:
+    name: Validate Project Files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check required files exist
+        run: |
+          echo "Checking required project files..."
+          for f in README.md LICENSE environment.yml requirements.txt CITATION.cff; do
+            if [ -f "$f" ]; then
+              echo "  [OK] $f"
+            else
+              echo "  [MISSING] $f" && exit 1
+            fi
+          done
+
+      - name: Check Python scripts exist
+        run: |
+          echo "Checking pipeline scripts..."
+          for f in 01_data_exploration.py 02_preprocessing_and_model.py 03_apply_to_image.py 04_pytorch_models.py 05_apply_pytorch_to_image.py; do
+            if [ -f "$f" ]; then
+              echo "  [OK] $f"
+            else
+              echo "  [MISSING] $f" && exit 1
+            fi
+          done

@@ -1,10 +1,27 @@
+<div align="center">
+
 # Crop Classification with Deep Learning
 
-![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c?logo=pytorch)
-![Sentinel-2](https://img.shields.io/badge/Sentinel--2-ESA-green)
-![CUDA](https://img.shields.io/badge/CUDA-RTX%203050-76b900?logo=nvidia)
-![License](https://img.shields.io/badge/License-MIT-yellow)
+### Sentinel-2 Satellite Imagery | Elgabel Region, Sudan
+
+[![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://python.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.x-f7931e?logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
+[![Sentinel-2](https://img.shields.io/badge/Sentinel--2-ESA-green?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjciIGZpbGw9IiMwMDU1QTQiLz48L3N2Zz4=)](https://sentinels.copernicus.eu)
+[![CUDA](https://img.shields.io/badge/CUDA-RTX%203050-76b900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
+[![License](https://img.shields.io/github/license/Osman-Geomatics93/crop-classification-deep-learning?color=yellow)](LICENSE)
+
+[![CI](https://github.com/Osman-Geomatics93/crop-classification-deep-learning/actions/workflows/ci.yml/badge.svg)](https://github.com/Osman-Geomatics93/crop-classification-deep-learning/actions)
+[![Last Commit](https://img.shields.io/github/last-commit/Osman-Geomatics93/crop-classification-deep-learning?color=blue)](https://github.com/Osman-Geomatics93/crop-classification-deep-learning/commits/main)
+[![Repo Size](https://img.shields.io/github/repo-size/Osman-Geomatics93/crop-classification-deep-learning?color=orange)](https://github.com/Osman-Geomatics93/crop-classification-deep-learning)
+[![Stars](https://img.shields.io/github/stars/Osman-Geomatics93/crop-classification-deep-learning?style=social)](https://github.com/Osman-Geomatics93/crop-classification-deep-learning/stargazers)
+[![Release](https://img.shields.io/github/v/release/Osman-Geomatics93/crop-classification-deep-learning?color=brightgreen)](https://github.com/Osman-Geomatics93/crop-classification-deep-learning/releases)
+
+---
+
+**9 Models** | **24 Spectral Features** | **100% Accuracy** | **104 km² Classified**
+
+</div>
 
 Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-2 satellite imagery and multiple machine learning / deep learning models. The pipeline covers data acquisition (Google Earth Engine), exploratory analysis, classical ML training (scikit-learn, XGBoost), PyTorch deep learning, and wall-to-wall satellite image classification.
 
@@ -25,6 +42,7 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
 - [Google Earth Engine](#google-earth-engine)
 - [Contributing](#contributing)
 - [Citation](#citation)
+- [Changelog](#changelog)
 - [License](#license)
 
 ---
@@ -225,6 +243,8 @@ crop-classification-deep-learning/
 │   ├── ISSUE_TEMPLATE/
 │   │   ├── bug_report.md
 │   │   └── feature_request.md
+│   ├── workflows/
+│   │   └── ci.yml
 │   └── PULL_REQUEST_TEMPLATE.md
 ├── docs/                          # Result visualizations
 │   ├── class_distribution.png
@@ -250,6 +270,7 @@ crop-classification-deep-learning/
 ├── 04_pytorch_models.py
 ├── 05_apply_pytorch_to_image.py
 ├── .gitignore
+├── CHANGELOG.md
 ├── CITATION.cff
 ├── CONTRIBUTING.md
 ├── LICENSE
@@ -369,6 +390,12 @@ If you use this project in your research, please cite it:
 ```
 
 You can also use the **"Cite this repository"** button on GitHub (powered by `CITATION.cff`).
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
 
 ---
 
