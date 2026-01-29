@@ -65,27 +65,36 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
 
 ## Workflow
 
-```
-1. Data Acquisition      (Google Earth Engine — Sentinel-2 composite + indices)
-        ↓
-2. Data Exploration      (01_data_exploration.py)
-        ↓
-3. Preprocessing & ML    (02_preprocessing_and_model.py)
-   Models                  ├─ MLP (class weights)
-                           ├─ MLP (SMOTE)
-                           ├─ XGBoost (class weights)
-                           ├─ XGBoost (SMOTE)
-                           └─ Random Forest (balanced)
-        ↓
-4. Apply ML to Image     (03_apply_to_image.py)
-        ↓
-5. PyTorch Deep Learning  (04_pytorch_models.py)
-   Models                  ├─ SpectralMLP
-                           ├─ SpectralCNN1D
-                           ├─ SpectralHybrid (CNN + MLP)
-                           └─ SpectralAttention (Transformer)
-        ↓
-6. Apply DL to Image     (05_apply_pytorch_to_image.py)
+```mermaid
+graph TD
+    A["1. Data Acquisition<br/><i>Google Earth Engine</i>"] -->|Sentinel-2 Composite + Indices| B
+    B["2. Data Exploration<br/><i>01_data_exploration.py</i>"] -->|24,556 samples / 24 features| C
+    C["3. Preprocessing & ML Training<br/><i>02_preprocessing_and_model.py</i>"] --> D
+    C --> E
+
+    subgraph sklearn ["Scikit-learn / XGBoost Models"]
+        D["MLP · MLP+SMOTE<br/>XGBoost · XGBoost+SMOTE<br/>Random Forest"]
+    end
+
+    D -->|Best: Random Forest| F["4. Apply ML to Image<br/><i>03_apply_to_image.py</i>"]
+
+    subgraph pytorch ["PyTorch Deep Learning Models"]
+        E["SpectralMLP · SpectralCNN1D<br/>SpectralHybrid · SpectralAttention"]
+    end
+
+    E -->|"<i>04_pytorch_models.py</i>"| G["5. Apply DL to Image<br/><i>05_apply_pytorch_to_image.py</i>"]
+
+    F --> H["Classification Map<br/>104 km² · 5 classes"]
+    G --> H
+
+    style A fill:#4CAF50,stroke:#333,color:#fff
+    style B fill:#2196F3,stroke:#333,color:#fff
+    style C fill:#FF9800,stroke:#333,color:#fff
+    style D fill:#9C27B0,stroke:#333,color:#fff
+    style E fill:#E91E63,stroke:#333,color:#fff
+    style F fill:#00BCD4,stroke:#333,color:#fff
+    style G fill:#00BCD4,stroke:#333,color:#fff
+    style H fill:#F44336,stroke:#333,color:#fff
 ```
 
 ---
@@ -142,60 +151,106 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
   <img src="docs/class_distribution.png" alt="Class Distribution" width="85%">
 </p>
 
-### Feature Distributions by Class
+<details>
+<summary><b>Feature Distributions by Class</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/feature_distributions.png" alt="Feature Distributions" width="100%">
 </p>
+</details>
 
-### Key Features — Box Plots
+<details>
+<summary><b>Key Features — Box Plots</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/feature_boxplots.png" alt="Feature Boxplots" width="100%">
 </p>
+</details>
 
-### Feature Correlation Matrix
+<details>
+<summary><b>Feature Correlation Matrix</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/correlation_matrix.png" alt="Correlation Matrix" width="80%">
 </p>
+
+**Highly correlated feature pairs (|r| > 0.99):**
+- CIgreen ↔ GCVI: 1.000
+- EVI ↔ MSAVI: 0.999
+- EVI ↔ SAVI: 0.999
+- MSAVI ↔ SAVI: 0.998
+- B7 ↔ B8A: 0.995
+- NDRE ↔ SAVI: 0.994
+- B2 ↔ B3: 0.994
+
+</details>
 
 ---
 
 ## Model Training Details
 
-### Sklearn — Training Curves & Confusion Matrices
+<details>
+<summary><b>Sklearn — MLP Training Curves</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/training_history.png" alt="MLP Training History" width="85%">
 </p>
+</details>
+
+<details>
+<summary><b>Sklearn — Confusion Matrices (All 5 Models)</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/confusion_matrices.png" alt="Sklearn Confusion Matrices" width="100%">
 </p>
+</details>
 
-### XGBoost — Feature Importance
+<details>
+<summary><b>XGBoost — Feature Importance</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/feature_importance.png" alt="XGBoost Feature Importance" width="70%">
 </p>
+</details>
 
-### Per-Class Accuracy Comparison (All Sklearn Models)
+<details>
+<summary><b>Per-Class Accuracy Comparison (All Sklearn Models)</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/per_class_accuracy.png" alt="Per-Class Accuracy" width="85%">
 </p>
+</details>
 
-### PyTorch — Training Curves
+<details>
+<summary><b>PyTorch — Training & Validation Loss Curves</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/pytorch_training_curves.png" alt="PyTorch Training Curves" width="100%">
 </p>
+</details>
 
-### PyTorch — Confusion Matrices
+<details>
+<summary><b>PyTorch — Confusion Matrices (All 4 Models)</b> (click to expand)</summary>
+<br>
 <p align="center">
   <img src="docs/pytorch_confusion_matrices.png" alt="PyTorch Confusion Matrices" width="100%">
 </p>
+</details>
 
-### Classification Visualizations
+<details>
+<summary><b>Classification Map Visualizations</b> (click to expand)</summary>
+<br>
+
+**Random Forest (sklearn)**
 <p align="center">
   <img src="docs/classification_visualization.png" alt="RF Classification Map" width="80%">
 </p>
+
+**SpectralHybrid (PyTorch)**
 <p align="center">
   <img src="docs/pytorch_classification_visualization.png" alt="PyTorch Classification Map" width="80%">
 </p>
+</details>
 
 ---
 
@@ -236,6 +291,10 @@ All PyTorch models use: **FocalLoss** (gamma=2), **AdamW** (weight_decay=1e-4), 
 ---
 
 ## Project Structure
+
+<details>
+<summary><b>View full directory tree</b> (click to expand)</summary>
+<br>
 
 ```
 crop-classification-deep-learning/
@@ -280,6 +339,8 @@ crop-classification-deep-learning/
 ├── fix_jupyter_kernel.bat
 └── requirements.txt
 ```
+
+</details>
 
 ---
 

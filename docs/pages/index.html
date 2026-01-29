@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Classification with Deep Learning</title>
+    <meta name="description" content="Multi-class crop classification in Elgabel Region, Sudan using Sentinel-2 imagery with scikit-learn and PyTorch deep learning models.">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --accent: #58a6ff;
+            --green: #3fb950;
+            --orange: #d29922;
+            --red: #f85149;
+            --purple: #bc8cff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a2332 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #58a6ff, #3fb950);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero .subtitle {
+            font-size: 1.2em;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+        .hero .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat .number {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .stat .label {
+            font-size: 0.85em;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .badges { margin-top: 20px; }
+        .badges img { margin: 3px; }
+
+        /* Sections */
+        section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+        section:last-child { border-bottom: none; }
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 24px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h2 .icon { font-size: 0.9em; }
+        h3 { font-size: 1.2em; margin: 20px 0 12px; color: var(--accent); }
+
+        /* Cards Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+        .card:hover { border-color: var(--accent); }
+        .card h3 { margin-top: 0; }
+        .card p { color: var(--muted); font-size: 0.95em; }
+        .card .metric {
+            font-size: 2em;
+            font-weight: 800;
+            color: var(--green);
+            margin: 8px 0;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.95em;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            background: var(--card);
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            letter-spacing: 0.5px;
+        }
+        tr:hover { background: rgba(88, 166, 255, 0.05); }
+        .best { color: var(--green); font-weight: 700; }
+
+        /* Images */
+        .img-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .img-grid.single { grid-template-columns: 1fr; }
+        .img-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .img-card img {
+            width: 100%;
+            display: block;
+        }
+        .img-card .caption {
+            padding: 12px 16px;
+            font-size: 0.85em;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* Classes */
+        .class-list {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .class-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            font-size: 0.9em;
+        }
+        .class-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Pipeline */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 30px 0;
+        }
+        .pipe-step {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 0.85em;
+            min-width: 140px;
+        }
+        .pipe-step .step-num {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+        .pipe-arrow { color: var(--muted); font-size: 1.5em; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--muted);
+            font-size: 0.85em;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* CTA */
+        .cta {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 20px;
+            transition: opacity 0.2s;
+        }
+        .cta:hover { opacity: 0.85; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8em; }
+            .hero .stats { gap: 20px; }
+            .stat .number { font-size: 1.6em; }
+            .img-grid { grid-template-columns: 1fr; }
+            .pipeline { flex-direction: column; }
+            .pipe-arrow { transform: rotate(90deg); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+    <div class="container">
+        <h1>Crop Classification with Deep Learning</h1>
+        <p class="subtitle">Sentinel-2 Satellite Imagery &middot; Elgabel Region, Sudan</p>
+
+        <div class="badges">
+            <img src="https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white" alt="Python">
+            <img src="https://img.shields.io/badge/PyTorch-2.x-ee4c2c?logo=pytorch&logoColor=white" alt="PyTorch">
+            <img src="https://img.shields.io/badge/scikit--learn-1.x-f7931e?logo=scikit-learn&logoColor=white" alt="sklearn">
+            <img src="https://img.shields.io/badge/CUDA-RTX%203050-76b900?logo=nvidia&logoColor=white" alt="CUDA">
+            <img src="https://img.shields.io/github/license/Osman-Geomatics93/crop-classification-deep-learning?color=yellow" alt="License">
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="number">9</div>
+                <div class="label">Models</div>
+            </div>
+            <div class="stat">
+                <div class="number">24</div>
+                <div class="label">Features</div>
+            </div>
+            <div class="stat">
+                <div class="number">100%</div>
+                <div class="label">Accuracy</div>
+            </div>
+            <div class="stat">
+                <div class="number">104 km&sup2;</div>
+                <div class="label">Classified</div>
+            </div>
+            <div class="stat">
+                <div class="number">24,556</div>
+                <div class="label">Samples</div>
+            </div>
+        </div>
+
+        <a href="https://github.com/Osman-Geomatics93/crop-classification-deep-learning" class="cta">View on GitHub</a>
+    </div>
+</div>
+
+<!-- Crop Classes -->
+<section>
+    <div class="container">
+        <h2><span class="icon">&#127793;</span> Crop Classes</h2>
+        <div class="class-list">
+            <div class="class-chip"><span class="class-dot" style="background:#FF8C00"></span> Cotton (1.4%)</div>
+            <div class="class-chip"><span class="class-dot" style="background:#FFD700"></span> Wheat (32.2%)</div>
+            <div class="class-chip"><span class="class-dot" style="background:#8B4513"></span> Fallow (45.4%)</div>
+            <div class="class-chip"><span class="class-dot" style="background:#32CD32"></span> Grass (20.5%)</div>
+            <div class="class-chip"><span class="class-dot" style="background:#0000FF"></span> Water (0.6%)</div>
+        </div>
+    </div>
+</section>
+
+<!-- Pipeline -->
+<section>
+    <div class="container">
+        <h2><span class="icon">&#9881;</span> Pipeline</h2>
+        <div class="pipeline">
+            <div class="pipe-step"><div class="step-num">Step 1</div>GEE Data<br>Acquisition</div>
+            <span class="pipe-arrow">&rarr;</span>
+            <div class="pipe-step"><div class="step-num">Step 2</div>Data<br>Exploration</div>
+            <span class="pipe-arrow">&rarr;</span>
+            <div class="pipe-step"><div class="step-num">Step 3</div>ML Training<br>(5 models)</div>
+            <span class="pipe-arrow">&rarr;</span>
+            <div class="pipe-step"><div class="step-num">Step 4</div>DL Training<br>(4 models)</div>
+            <span class="pipe-arrow">&rarr;</span>
+            <div class="pipe-step"><div class="step-num">Step 5</div>Image<br>Classification</div>
+        </div>
+    </div>
+</section>
+
+<!-- Results -->
+<section>
+    <div class="container">
+        <h2><span class="icon">&#128202;</span> Results</h2>
+
+        <h3>Scikit-learn & XGBoost</h3>
+        <table>
+            <thead>
+                <tr><th>Model</th><th>Accuracy</th><th>Macro F1</th><th>Kappa</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>MLP Neural Network</td><td>99.98%</td><td>0.9984</td><td>0.9997</td></tr>
+                <tr><td>MLP + SMOTE</td><td>99.98%</td><td>0.9984</td><td>0.9997</td></tr>
+                <tr><td>XGBoost</td><td>99.98%</td><td>0.9998</td><td>0.9997</td></tr>
+                <tr><td>XGBoost + SMOTE</td><td>99.98%</td><td>0.9998</td><td>0.9997</td></tr>
+                <tr><td class="best">Random Forest</td><td class="best">100.00%</td><td class="best">1.0000</td><td class="best">1.0000</td></tr>
+            </tbody>
+        </table>
+
+        <h3>PyTorch Deep Learning</h3>
+        <table>
+            <thead>
+                <tr><th>Model</th><th>Accuracy</th><th>Macro F1</th><th>Kappa</th><th>Params</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>SpectralMLP</td><td>99.96%</td><td>0.9969</td><td>0.9994</td><td>78,853</td></tr>
+                <tr><td>SpectralCNN1D</td><td>99.49%</td><td>0.9854</td><td>0.9922</td><td>40,069</td></tr>
+                <tr><td class="best">SpectralHybrid</td><td class="best">100.00%</td><td class="best">1.0000</td><td class="best">1.0000</td><td>43,717</td></tr>
+                <tr><td class="best">SpectralAttention</td><td class="best">100.00%</td><td class="best">1.0000</td><td class="best">1.0000</td><td>106,309</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Classification Maps -->
+<section>
+    <div class="container">
+        <h2><span class="icon">&#128506;</span> Classification Maps</h2>
+        <div class="img-grid">
+            <div class="img-card">
+                <img src="../truecolor_vs_classification.png" alt="RF Classification">
+                <div class="caption">Random Forest (sklearn) &mdash; True Color vs Classification</div>
+            </div>
+            <div class="img-card">
+                <img src="../pytorch_truecolor_vs_classification.png" alt="PyTorch Classification">
+                <div class="caption">SpectralHybrid (PyTorch) &mdash; True Color vs Classification</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Visualizations -->
+<section>
+    <div class="container">
+        <h2><span class="icon">&#128200;</span> Training & Analysis</h2>
+        <div class="img-grid">
+            <div class="img-card">
+                <img src="../class_distribution.png" alt="Class Distribution">
+                <div class="caption">Class Distribution</div>
+            </div>
+            <div class="img-card">
+                <img src="../feature_importance.png" alt="Feature Importance">
+                <div class="caption">XGBoost Feature Importance</div>
+            </div>
+            <div class="img-card">
+                <img src="../pytorch_training_curves.png" alt="Training Curves">
+                <div class="caption">PyTorch Training Curves</div>
+            </div>
+            <div class="img-card">
+                <img src="../pytorch_confusion_matrices.png" alt="Confusion Matrices">
+                <div class="caption">PyTorch Confusion Matrices</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Area Stats -->
+<section>
+    <div class="container">
+        <h2><span class="icon">&#127758;</span> Area Statistics</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Cotton</h3>
+                <div class="metric">463 ha</div>
+                <p>4.63 km&sup2; &middot; 4.4% of classified area</p>
+            </div>
+            <div class="card">
+                <h3>Wheat</h3>
+                <div class="metric">1,374 ha</div>
+                <p>13.74 km&sup2; &middot; 13.2% of classified area</p>
+            </div>
+            <div class="card">
+                <h3>Fallow</h3>
+                <div class="metric">5,840 ha</div>
+                <p>58.40 km&sup2; &middot; 55.9% of classified area</p>
+            </div>
+            <div class="card">
+                <h3>Grass</h3>
+                <div class="metric">2,673 ha</div>
+                <p>26.73 km&sup2; &middot; 25.6% of classified area</p>
+            </div>
+            <div class="card">
+                <h3>Water</h3>
+                <div class="metric">89 ha</div>
+                <p>0.89 km&sup2; &middot; 0.9% of classified area</p>
+            </div>
+            <div class="card">
+                <h3>Total Classified</h3>
+                <div class="metric" style="color:#58a6ff">10,439 ha</div>
+                <p>104.39 km&sup2; &middot; 1,043,855 pixels</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <p>
+            <a href="https://github.com/Osman-Geomatics93/crop-classification-deep-learning">GitHub Repository</a>
+            &middot;
+            <a href="https://github.com/Osman-Geomatics93/crop-classification-deep-learning/releases">Releases</a>
+            &middot;
+            MIT License
+        </p>
+        <p style="margin-top:8px">Crop Classification with Deep Learning &copy; 2026</p>
+    </div>
+</footer>
+
+</body>
+</html>

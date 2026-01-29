@@ -12,6 +12,7 @@ models/
 # === Generated outputs ===
 *.png
 !docs/*.png
+!docs/pages/
 outputs/
 
 # === Python ===
