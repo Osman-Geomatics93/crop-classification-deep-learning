@@ -1,0 +1,32 @@
+# === Data files (too large for git) ===
+*.tif
+*.tif.aux.xml
+*.csv
+*.geojson
+
+# === Model artifacts ===
+*.joblib
+*.pth
+models/
+
+# === Generated outputs ===
+*.png
+outputs/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+
+# === Claude Code metadata ===
+.claude/
+
+# === OS / Misc ===
+nul
+.DS_Store
+Thumbs.db

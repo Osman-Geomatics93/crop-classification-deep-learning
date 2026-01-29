@@ -1,0 +1,22 @@
+name: geodl
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pytorch
+  - torchvision
+  - pytorch-cuda=11.8
+  - scikit-learn
+  - xgboost
+  - imbalanced-learn
+  - gdal
+  - rasterio
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - joblib
+  - ipykernel
+  - jupyter
