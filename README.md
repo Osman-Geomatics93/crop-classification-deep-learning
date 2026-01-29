@@ -3,6 +3,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-ee4c2c?logo=pytorch)
 ![Sentinel-2](https://img.shields.io/badge/Sentinel--2-ESA-green)
+![CUDA](https://img.shields.io/badge/CUDA-RTX%203050-76b900?logo=nvidia)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-2 satellite imagery and multiple machine learning / deep learning models. The pipeline covers data acquisition (Google Earth Engine), exploratory analysis, classical ML training (scikit-learn, XGBoost), PyTorch deep learning, and wall-to-wall satellite image classification.
@@ -13,13 +14,15 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
 
 **Elgabel Region, Sudan** — an agricultural zone where the following five crop/land-cover classes are mapped using Sentinel-2 imagery from Q1 2020:
 
-| Class ID | Name   | Color   |
-|----------|--------|---------|
-| 0        | Cotton | #FF8C00 |
-| 1        | Wheat  | #FFD700 |
-| 2        | Fallow | #8B4513 |
-| 3        | Grass  | #32CD32 |
-| 4        | Water  | #0000FF |
+| Class ID | Name   | Color   | Samples | Percentage |
+|----------|--------|---------|--------:|----------:|
+| 0        | Cotton | ![#FF8C00](https://via.placeholder.com/12/FF8C00/FF8C00.png) `#FF8C00` | 337 | 1.4% |
+| 1        | Wheat  | ![#FFD700](https://via.placeholder.com/12/FFD700/FFD700.png) `#FFD700` | 7,901 | 32.2% |
+| 2        | Fallow | ![#8B4513](https://via.placeholder.com/12/8B4513/8B4513.png) `#8B4513` | 11,150 | 45.4% |
+| 3        | Grass  | ![#32CD32](https://via.placeholder.com/12/32CD32/32CD32.png) `#32CD32` | 5,024 | 20.5% |
+| 4        | Water  | ![#0000FF](https://via.placeholder.com/12/0000FF/0000FF.png) `#0000FF` | 144 | 0.6% |
+
+> **Total:** 24,556 labeled samples | **Imbalance ratio:** 77.4:1 (Fallow vs Water)
 
 ---
 
@@ -50,6 +53,151 @@ Multi-class crop classification in the **Elgabel Region, Sudan** using Sentinel-
 
 ---
 
+## Results
+
+### Scikit-learn & XGBoost Models
+
+| Model | Accuracy | Macro F1 | Weighted F1 | Kappa |
+|-------|:--------:|:--------:|:-----------:|:-----:|
+| MLP Neural Network | 99.98% | 0.9984 | 0.9998 | 0.9997 |
+| MLP + SMOTE | 99.98% | 0.9984 | 0.9998 | 0.9997 |
+| XGBoost | 99.98% | 0.9998 | 0.9998 | 0.9997 |
+| XGBoost + SMOTE | 99.98% | 0.9998 | 0.9998 | 0.9997 |
+| **Random Forest** | **100.00%** | **1.0000** | **1.0000** | **1.0000** |
+
+### PyTorch Deep Learning Models
+
+| Model | Accuracy | Precision | Recall | Macro F1 | Kappa | Parameters |
+|-------|:--------:|:---------:|:------:|:--------:|:-----:|----------:|
+| SpectralMLP | 99.96% | 0.9942 | 0.9996 | 0.9969 | 0.9994 | 78,853 |
+| SpectralCNN1D | 99.49% | 0.9756 | 0.9964 | 0.9854 | 0.9922 | 40,069 |
+| **SpectralHybrid** | **100.00%** | **1.0000** | **1.0000** | **1.0000** | **1.0000** | **43,717** |
+| **SpectralAttention** | **100.00%** | **1.0000** | **1.0000** | **1.0000** | **1.0000** | **106,309** |
+
+### Classification Maps
+
+#### Random Forest (sklearn) — Satellite Image Classification
+<p align="center">
+  <img src="docs/truecolor_vs_classification.png" alt="True Color vs RF Classification" width="100%">
+</p>
+
+#### SpectralHybrid (PyTorch) — Satellite Image Classification
+<p align="center">
+  <img src="docs/pytorch_truecolor_vs_classification.png" alt="True Color vs PyTorch Classification" width="100%">
+</p>
+
+### Area Statistics (SpectralHybrid Model)
+
+| Class | Area (ha) | Area (km²) | Percentage |
+|-------|----------:|----------:|-----------:|
+| Cotton | 463.0 | 4.63 | 4.4% |
+| Wheat | 1,373.9 | 13.74 | 13.2% |
+| Fallow | 5,839.9 | 58.40 | 55.9% |
+| Grass | 2,672.5 | 26.73 | 25.6% |
+| Water | 89.3 | 0.89 | 0.9% |
+
+---
+
+## Data Exploration
+
+### Class Distribution
+<p align="center">
+  <img src="docs/class_distribution.png" alt="Class Distribution" width="85%">
+</p>
+
+### Feature Distributions by Class
+<p align="center">
+  <img src="docs/feature_distributions.png" alt="Feature Distributions" width="100%">
+</p>
+
+### Key Features — Box Plots
+<p align="center">
+  <img src="docs/feature_boxplots.png" alt="Feature Boxplots" width="100%">
+</p>
+
+### Feature Correlation Matrix
+<p align="center">
+  <img src="docs/correlation_matrix.png" alt="Correlation Matrix" width="80%">
+</p>
+
+---
+
+## Model Training Details
+
+### Sklearn — Training Curves & Confusion Matrices
+<p align="center">
+  <img src="docs/training_history.png" alt="MLP Training History" width="85%">
+</p>
+<p align="center">
+  <img src="docs/confusion_matrices.png" alt="Sklearn Confusion Matrices" width="100%">
+</p>
+
+### XGBoost — Feature Importance
+<p align="center">
+  <img src="docs/feature_importance.png" alt="XGBoost Feature Importance" width="70%">
+</p>
+
+### Per-Class Accuracy Comparison (All Sklearn Models)
+<p align="center">
+  <img src="docs/per_class_accuracy.png" alt="Per-Class Accuracy" width="85%">
+</p>
+
+### PyTorch — Training Curves
+<p align="center">
+  <img src="docs/pytorch_training_curves.png" alt="PyTorch Training Curves" width="100%">
+</p>
+
+### PyTorch — Confusion Matrices
+<p align="center">
+  <img src="docs/pytorch_confusion_matrices.png" alt="PyTorch Confusion Matrices" width="100%">
+</p>
+
+### Classification Visualizations
+<p align="center">
+  <img src="docs/classification_visualization.png" alt="RF Classification Map" width="80%">
+</p>
+<p align="center">
+  <img src="docs/pytorch_classification_visualization.png" alt="PyTorch Classification Map" width="80%">
+</p>
+
+---
+
+## Data Description
+
+**24 spectral features** derived from a Sentinel-2 Q1 2020 composite:
+
+| Category | Features |
+|----------|----------|
+| **Spectral Bands (10)** | B2, B3, B4, B5, B6, B7, B8, B8A, B11, B12 |
+| **Vegetation Indices (14)** | NDVI, EVI, SAVI, NDRE, NDRE2, GNDVI, NDMI, BSI, MNDWI, LSWI, GCVI, WDRVI, CIgreen, CIrededge, MSAVI |
+
+---
+
+## Model Architectures
+
+### Scikit-learn / XGBoost (Step 02)
+
+| Model | Architecture | Imbalance Strategy |
+|-------|-------------|-------------------|
+| MLP Neural Network | 24 → 256 → 128 → 64 → 32 → 5 | Class weights |
+| MLP + SMOTE | 24 → 512 → 256 → 128 → 64 → 32 → 5 | SMOTE oversampling |
+| XGBoost | 500 trees, depth=8, lr=0.05 | Class weights |
+| XGBoost + SMOTE | 500 trees, depth=8, lr=0.05 | SMOTE oversampling |
+| Random Forest | 500 trees, balanced | Balanced class weights |
+
+### PyTorch Deep Learning (Step 04)
+
+| Model | Description | Key Features |
+|-------|------------|-------------|
+| SpectralMLP | Deep MLP (24 → 128 → 256 → 128 → 64 → 5) | BatchNorm, Dropout(0.3), FocalLoss |
+| SpectralCNN1D | 1D CNN (32 → 64 → 128 filters) | Treats spectral bands as 1D signal |
+| SpectralHybrid | CNN + MLP dual-branch fusion | Local + global feature extraction |
+| SpectralAttention | Transformer-style | CLS token, 4 heads, 2 layers, GELU |
+
+All PyTorch models use: **FocalLoss** (gamma=2), **AdamW** (weight_decay=1e-4), **ReduceLROnPlateau**, early stopping (patience=15), SMOTE-balanced data. Trained on **NVIDIA RTX 3050** (4GB VRAM).
+
+---
+
 ## Project Structure
 
 ```
@@ -65,47 +213,24 @@ crop-classification-deep-learning/
 ├── 03_diagnose_bands.py
 ├── 04_pytorch_models.py
 ├── 05_apply_pytorch_to_image.py
+├── docs/                          # Result visualizations
+│   ├── class_distribution.png
+│   ├── feature_distributions.png
+│   ├── feature_boxplots.png
+│   ├── correlation_matrix.png
+│   ├── training_history.png
+│   ├── confusion_matrices.png
+│   ├── feature_importance.png
+│   ├── per_class_accuracy.png
+│   ├── pytorch_training_curves.png
+│   ├── pytorch_confusion_matrices.png
+│   ├── classification_visualization.png
+│   ├── truecolor_vs_classification.png
+│   ├── pytorch_classification_visualization.png
+│   └── pytorch_truecolor_vs_classification.png
 └── gee/
     └── crop_classification_gee.js
 ```
-
----
-
-## Data Description
-
-**24 spectral features** derived from a Sentinel-2 Q1 2020 composite:
-
-| Category | Features |
-|----------|----------|
-| **Spectral Bands (10)** | B2, B3, B4, B5, B6, B7, B8, B8A, B11, B12 |
-| **Vegetation Indices (14)** | NDVI, EVI, SAVI, NDRE, GNDVI, NDMI, BSI, MNDWI, LSWI, GCVI, WDRVI, CIgreen, CIrededge, MSAVI |
-
-Training data: ~43,000 labeled point samples across 5 classes (exported from GEE as CSV/GeoJSON).
-
----
-
-## Model Architectures
-
-### Scikit-learn / XGBoost (Step 02)
-
-| Model | Architecture | Imbalance Strategy |
-|-------|-------------|-------------------|
-| MLP Neural Network | 24→256→128→64→32→5 | Class weights |
-| MLP + SMOTE | 24→512→256→128→64→32→5 | SMOTE oversampling |
-| XGBoost | 500 trees, depth=8 | Class weights |
-| XGBoost + SMOTE | 500 trees, depth=8 | SMOTE oversampling |
-| Random Forest | 500 trees | Balanced class weights |
-
-### PyTorch Deep Learning (Step 04)
-
-| Model | Description | Key Features |
-|-------|------------|-------------|
-| SpectralMLP | Deep MLP (24→128→256→128→64→5) | BatchNorm, Dropout, FocalLoss |
-| SpectralCNN1D | 1D CNN (32→64→128 filters) | Treats bands as 1D signal |
-| SpectralHybrid | CNN + MLP fusion | Dual-branch feature extraction |
-| SpectralAttention | Transformer-style | CLS token, 4 heads, 2 layers |
-
-All PyTorch models use: FocalLoss (gamma=2), AdamW, ReduceLROnPlateau, early stopping, SMOTE-balanced data.
 
 ---
 
@@ -149,7 +274,7 @@ python 02_preprocessing_and_model.py
 # Step 3: Apply best ML model to full satellite image
 python 03_apply_to_image.py
 
-# Step 4: Train PyTorch deep learning models
+# Step 4: Train PyTorch deep learning models (GPU recommended)
 python 04_pytorch_models.py
 
 # Step 5: Apply best PyTorch model to full satellite image
@@ -167,11 +292,12 @@ python 05_apply_pytorch_to_image.py
 The `gee/crop_classification_gee.js` script handles data acquisition:
 
 1. Defines the study area (Elgabel Region, Sudan)
-2. Filters Sentinel-2 Surface Reflectance (Q1 2020, <20% cloud)
-3. Computes a cloud-free median composite
-4. Calculates 14 spectral indices (NDVI, EVI, SAVI, etc.)
-5. Samples training points from labeled polygons
-6. Exports the 24-band composite and training CSV to Google Drive
+2. Filters Sentinel-2 Surface Reflectance (Q1 2020, <20% cloud cover)
+3. Applies cloud masking using the SCL band
+4. Computes a cloud-free median composite (10 spectral bands)
+5. Calculates 14 spectral indices (NDVI, EVI, SAVI, NDRE, GNDVI, NDMI, BSI, MNDWI, LSWI, GCVI, WDRVI, CIgreen, CIrededge, MSAVI)
+6. Samples training points from labeled polygons (5 classes)
+7. Exports the 24-band composite and training CSV to Google Drive
 
 ---
 
